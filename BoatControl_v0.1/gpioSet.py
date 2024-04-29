@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import subprocess
-import time
+from time import sleep , time
 
 # Motor controller pin
 # Motor situation
@@ -63,10 +63,10 @@ def setIntegratedControl(stat):
     if stat == STOP:
             setMotor(CH1,20,STOP)
             setMotor(CH2,20,STOP)
-            time.sleep(3)
+            sleep(3)
             setMotor(CH1,20,BACKWORD)
             setMotor(CH2,20,FORWARD)
-            time.sleep(6)
+            sleep(6)
 
     if stat == RIGHT:
         setMotor(CH1,50,BACKWORD)
@@ -75,41 +75,26 @@ def setIntegratedControl(stat):
     if stat == LEFT:
         setMotor(CH1,50,STOP)
         setMotor(CH2,50,FORWARD)
-        time.sleep(5)
+        sleep(5)
 
 def get_distance():
     GPIO.output(TRIGGER,False)
-    time.sleep(0.5)
+    sleep(0.5)
         
     GPIO.output(TRIGGER,True)
-    time.sleep(0.00001)
+    sleep(0.00001)
     GPIO.output(TRIGGER,False)
         
     while GPIO.input(ECHO) == 0:
-        start = time.time()
+        start = time()
             
     while GPIO.input(ECHO) == 1:
-        stop = time.time()
+        stop = time()
             
     time_interval = stop - start
     distance = time_interval * 17000
     distance = round(distance, 2)
     return distance
-      
-# Set Control
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(TRIGGER,GPIO.OUT)
-GPIO.setup(ECHO,GPIO.IN)
-
-# Motor PWM set
-pwmA = setPinConfig(ENA, IN1, IN2)
-pwmB = setPinConfig(ENB, IN3, IN4)
-
-# Button Start set
-GPIO.setup(BUTTON_ON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(BUTTON_OFF_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-process = None
 
 def start_process(channel):
     global process
@@ -127,11 +112,26 @@ def stop_process(channel):
     else:
         print("No process is running.")
 
-GPIO.add_event_detect(BUTTON_ON_PIN, GPIO.RISING, callback=start_process, bouncetime=300)
-GPIO.add_event_detect(BUTTON_OFF_PIN, GPIO.RISING, callback=stop_process, bouncetime=300)
+if __name__ == "__main__":      
+    # Set Control
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(TRIGGER,GPIO.OUT)
+    GPIO.setup(ECHO,GPIO.IN)
 
-try:
-    while True:
-        time.sleep(0.1)
-except KeyboardInterrupt:
-    GPIO.cleanup()
+    # Motor PWM set
+    pwmA = setPinConfig(ENA, IN1, IN2)
+    pwmB = setPinConfig(ENB, IN3, IN4)
+
+    # Button Start set
+    GPIO.setup(BUTTON_ON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(BUTTON_OFF_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+    process = None
+    GPIO.add_event_detect(BUTTON_ON_PIN, GPIO.RISING, callback=start_process, bouncetime=300)
+    GPIO.add_event_detect(BUTTON_OFF_PIN, GPIO.RISING, callback=stop_process, bouncetime=300)
+
+    try:
+        while True:
+            sleep(0.1)
+    except KeyboardInterrupt:
+        GPIO.cleanup()

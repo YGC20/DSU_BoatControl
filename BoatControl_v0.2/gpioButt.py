@@ -6,7 +6,6 @@ from time import sleep
 BUTTON_ON_PIN = 21
 BUTTON_OFF_PIN = 17
 
-process = None
 
 def start_process(channel):
     global process
@@ -24,17 +23,19 @@ def stop_process(channel):
     else:
         print("No process is running.")
 
-# Set Control
-GPIO.setmode(GPIO.BCM)
-# Button Start set
-GPIO.setup(BUTTON_ON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(BUTTON_OFF_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+if __name__ == "__main__":
+    # Set Control
+    GPIO.setmode(GPIO.BCM)
+    # Button Start set
+    GPIO.setup(BUTTON_ON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(BUTTON_OFF_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    
+    process = None
+    GPIO.add_event_detect(BUTTON_ON_PIN, GPIO.RISING, callback=start_process, bouncetime=300)
+    GPIO.add_event_detect(BUTTON_OFF_PIN, GPIO.RISING, callback=stop_process, bouncetime=300)
 
-GPIO.add_event_detect(BUTTON_ON_PIN, GPIO.RISING, callback=start_process, bouncetime=300)
-GPIO.add_event_detect(BUTTON_OFF_PIN, GPIO.RISING, callback=stop_process, bouncetime=300)
-
-try:
-    while True:
-        sleep(0.1)
-except KeyboardInterrupt:
-    GPIO.cleanup()
+    try:
+        while True:
+            sleep(0.1)
+    except KeyboardInterrupt:
+        GPIO.cleanup()
