@@ -16,7 +16,7 @@ CH2 = 1
 # PIN set
 # PWM PIN
 ENA = 26  #37 pin
-ENB = 20   #38 pin
+ENB = 20  #38 pin
 # MOTOR GPIO PIN
 IN1 = 19  #35 pin
 IN2 = 13  #33 pin
@@ -112,16 +112,18 @@ def stop_process(channel):
     else:
         print("No process is running.")
 
+GPIO.setup(TRIGGER,GPIO.OUT)
+GPIO.setup(ECHO,GPIO.IN)
+
+# Motor PWM set
+pwmA = setPinConfig(ENA, IN1, IN2)
+pwmB = setPinConfig(ENB, IN3, IN4)
+
+
 if __name__ == "__main__":      
     # Set Control
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(TRIGGER,GPIO.OUT)
-    GPIO.setup(ECHO,GPIO.IN)
-
-    # Motor PWM set
-    pwmA = setPinConfig(ENA, IN1, IN2)
-    pwmB = setPinConfig(ENB, IN3, IN4)
-
+    
     # Button Start set
     GPIO.setup(BUTTON_ON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(BUTTON_OFF_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
