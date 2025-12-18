@@ -22,6 +22,10 @@ IN2 = 13  #33 pin
 IN3 = 6   #31 pin
 IN4 = 5   #29 pin
 
+# GPIO pin setup for motor
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
 # Set Pin(Motor)
 def setPinConfig(EN, INA, INB):        
     GPIO.setup(EN, GPIO.OUT)
@@ -32,6 +36,7 @@ def setPinConfig(EN, INA, INB):
     # Stop PWM   
     pwm.start(0) 
     return pwm
+
 # Motor control function
 def setMotorControl(pwm, INA, INB, speed, stat):
     # Motor speed control PWM
@@ -45,30 +50,35 @@ def setMotorControl(pwm, INA, INB, speed, stat):
     elif stat == STOP:
         GPIO.output(INA, GPIO.LOW)
         GPIO.output(INB, GPIO.LOW)
+
 # Motor control function rapping
 def setMotor(ch, speed, stat):
     if ch == CH1:
         setMotorControl(pwmA, IN1, IN2, speed, stat)
     else:
         setMotorControl(pwmB, IN3, IN4, speed, stat)
+
 # double Motor control function
 def setIntegratedControl(stat):
     if stat == STOP:
-        setMotor(CH1,20,STOP)
-        setMotor(CH2,20,STOP)
-        sleep(3)
-        setMotor(CH1,20,BACKWORD)
-        setMotor(CH2,20,FORWARD)
-        sleep(6)
+        setMotor(CH1, 0, STOP)
+        setMotor(CH2, 0, STOP)
 
-    if stat == RIGHT:
-        setMotor(CH1,50,BACKWORD)
-        setMotor(CH2,50,STOP)
+    elif stat == FORWARD:
+        setMotor(CH1, 50, FORWARD)
+        setMotor(CH2, 50, FORWARD)
+
+    elif stat == BACKWORD:
+        setMotor(CH1, 50, BACKWORD)
+        setMotor(CH2, 50, BACKWORD)
+
+    elif stat == RIGHT:
+        setMotor(CH1, 50, FORWARD)
+        setMotor(CH2, 50, BACKWORD)
         
-    if stat == LEFT:
-        setMotor(CH1,50,STOP)
-        setMotor(CH2,50,FORWARD)
-        sleep(5)
+    elif stat == LEFT:
+        setMotor(CH1, 50, BACKWORD)
+        setMotor(CH2, 50, FORWARD)
 
 # Motor PWM set
 pwmA = setPinConfig(ENA, IN1, IN2)
