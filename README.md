@@ -1,19 +1,31 @@
-# DSU_BoatControl
- 이 프로젝트는 친구의 졸업 작품을 돕기 위해 만들어졌습니다. <br/>
- 프로젝트의 주요 내용은 객체 인식 프로그램을 활용하여 자율적으로 움직이는 쓰레기 수거 보트를 개발하는 것입니다. <br/>
- 저는 프로젝트에서 객체 인식 프로그램과 보트의 조종 시스템을 코딩을 지원해줬습니다. <br/>
+# DSU 자율 운항 쓰레기 수거 보트
 
- 우리는 YOLOv5를 객체 인식 프로그램으로 선택했습니다. <br/>
- > 선택 이유: 라즈베리 파이를 실행 플랫폼으로 사용하기로 했기 때문에 YOLOv5를 선택했습니다. <br/>
+이 프로젝트는 객체 인식 기술을 활용하여 수면의 쓰레기를 자율적으로 수거하는 보트를 개발하기 위한 것입니다. 전체 시스템은 라즈베리파이에서 동작하도록 설계되었습니다.
 
- 친구의 작품을 도와주는 이유 : 라즈베리파이 사용 공부 , 객체 인식 프로그램 공부
-* * *
+## 주요 기능
 
- This project was created to assist my friend with their graduation project. <br/>
- The main focus of the project is to develop an autonomous garbage collection boat using an object detection program. <br/>
- I supported the project by coding the object detection program and the boat's  control system. <br/>
+- **실시간 객체 탐지**: YOLOv5 모델을 사용하여 웹캠으로 들어오는 영상에서 특정 타겟(쓰레기 등)을 실시간으로 탐지합니다.
+- **자율 주행**: 탐지된 객체를 향해 보트가 자동으로 나아갑니다. 만약 시야에 타겟이 없으면 탐색 모드로 전환하여 객체를 찾습니다.
+- **장애물 회피**: 초음파 센서를 이용해 전방의 장애물을 감지하고 충돌을 방지합니다.
+- **물리적 제어**: 물리적 버튼을 통해 자율 운항 시스템을 간편하게 시작하고 중지할 수 있습니다.
 
- We chose YOLOv5 as the object detection program. <br/>
- > Reason for the choice: We decided to use Raspberry Pi as the execution platform, so we chose YOLOv5. <br/>
+## 시스템 구성 요소
 
- Reason for helping my friend with their project: To study Raspberry Pi usage and object detection programming.
+이 프로젝트의 제어 시스템은 라즈베리파이에서 실행되는 다음 파이썬 스크립트들로 구성됩니다. 이 스크립트들은 보트의 자율 운항을 위한 핵심 기능들을 모듈화하여 제공합니다.
+
+- **`yolo_main.py`**: 보트의 자율 운항을 총괄하는 메인 실행 스크립트입니다. 웹캠 영상 처리, YOLOv5 모델 추론, 그리고 탐지 결과 및 센서 데이터에 기반한 주행 로직을 구현합니다.
+- **`motor_control.py`**: 보트의 듀얼 모터 드라이브 시스템을 제어하는 모듈입니다. 전진, 후진, 회전, 정지 기능을 제공합니다.
+- **`distance_sensor.py`**: HC-SR04 초음파 센서를 관리하여 장애물과의 거리를 측정하는 모듈입니다.
+- **`button_handler.py`**: 두 개의 물리적 버튼으로부터 GPIO 입력을 받아 `yolo_main.py` 프로세스를 시작하고 중지시키는 역할을 합니다.
+
+## 하드웨어 요구사항
+
+- 라즈베리파이
+- 웹캠
+- 듀얼 채널 모터 컨트롤러 (예: L298N)
+- 2x DC 모터
+- 초음파 거리 센서 (예: HC-SR04)
+- 전원 공급 장치 / 배터리
+
+---
+*이 프로젝트는 친구의 졸업 작품을 돕기 위해 시작되었으며, 라즈베리파이 활용 및 객체 인식 프로그래밍 학습을 주된 목표로 하였습니다.*
